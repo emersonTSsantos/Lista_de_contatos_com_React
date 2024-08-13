@@ -5,7 +5,7 @@ import { startEditing, cancelEditing, saveEditing, setContacts, removeContact } 
 import { SearchContainer, SearchInput, ResultList, ResultCard, ContactName, ContactDetail, ContainerBotoes, BotaoEditar } from './styles';
 import AnimatedButton from '../AnimatedButton';
 import gsap from 'gsap';
-import { EditForm, EditInput, EditButton } from './styles'; // Import the new styled components
+import { EditForm, EditInput, EditButton } from './styles'; 
 
 const SearchBar: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -30,7 +30,7 @@ const SearchBar: React.FC = () => {
     contact.name.toLowerCase().includes(query.toLowerCase())
   );
 
-  const handleEditClick = (contact: any) => {
+  const handleEditClick = (contact: typeof editForm) => {
     dispatch(startEditing(contact.id));
     setEditForm(contact);
   };

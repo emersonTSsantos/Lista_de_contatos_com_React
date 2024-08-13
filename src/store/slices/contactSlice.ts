@@ -41,8 +41,11 @@ const contactSlice = createSlice({
       state.contacts = state.contacts.filter(contact => contact.id !== action.payload);
       state.editingId = null;
     },
+    addContact(state, action: PayloadAction<Contact>) {
+      state.contacts.push(action.payload);
+    },
   },
 });
 
-export const { setContacts, startEditing, cancelEditing, saveEditing, removeContact } = contactSlice.actions;
+export const { setContacts, startEditing, cancelEditing, saveEditing, removeContact, addContact } = contactSlice.actions;
 export default contactSlice.reducer;

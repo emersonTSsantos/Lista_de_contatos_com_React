@@ -6,7 +6,7 @@ import gsap from 'gsap';
 
 interface AnimatedButtonProps {
   contactId: number;
-  onRemoveComplete: () => void; // Callback to notify when the removal is complete
+  onRemoveComplete: () => void; 
 }
 
 const AnimatedButton: React.FC<AnimatedButtonProps> = ({ contactId, onRemoveComplete }) => {
@@ -36,7 +36,7 @@ const AnimatedButton: React.FC<AnimatedButtonProps> = ({ contactId, onRemoveComp
                 gsap.to(trashClockRef.current, { opacity: 0, duration: 0.5 });
                 gsap.to(checkRef.current, { opacity: 1, duration: 0.5, onComplete: () => {
                   dispatch(removeContact(contactId));
-                  onRemoveComplete(); // Notify that removal is complete
+                  onRemoveComplete(); 
                 }});
               }, 2000);
             }
