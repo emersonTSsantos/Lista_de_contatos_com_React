@@ -1,28 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
-import { startEditing, cancelEditing, saveEditing, removeContact, setContacts } from '../../store/slices/contactSlice';
-import { 
-  SearchContainer, 
-  SearchInput, 
-  ResultList, 
-  ResultCard, 
-  ContactName, 
-  ContactDetail, 
-  ContainerBotoes, 
-  BotaoRemover, 
-  BotaoEditar, 
-  EditForm, 
-  EditInput, 
-  EditButton 
-} from './styles';
-
-interface Contact {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-}
+import { startEditing, cancelEditing, saveEditing, setContacts, removeContact } from '../../store/slices/contactSlice';
+import { SearchContainer, SearchInput, ResultList, ResultCard, ContactName, ContactDetail, ContainerBotoes, BotaoEditar } from './styles';
+import AnimatedButton from '../AnimatedButton';
+import gsap from 'gsap';
+import { EditForm, EditInput, EditButton } from './styles'; // Import the new styled components
 
 const SearchBar: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -30,7 +13,8 @@ const SearchBar: React.FC = () => {
   const editingId = useSelector((state: RootState) => state.contacts.editingId);
   
   const [query, setQuery] = useState('');
-  const [editForm, setEditForm] = useState<Contact>({ id: 0, name: '', email: '', phone: '' });
+  const [editForm, setEditForm] = useState({ id: 0, name: '', email: '', phone: '' });
+  const contactRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
   useEffect(() => {
     if (contacts.length === 0) {
@@ -46,7 +30,7 @@ const SearchBar: React.FC = () => {
     contact.name.toLowerCase().includes(query.toLowerCase())
   );
 
-  const handleEditClick = (contact: Contact) => {
+  const handleEditClick = (contact: any) => {
     dispatch(startEditing(contact.id));
     setEditForm(contact);
   };
@@ -61,8 +45,10 @@ const SearchBar: React.FC = () => {
     setEditForm({ id: 0, name: '', email: '', phone: '' });
   };
 
-  const handleRemoveClick = (id: number) => {
-    dispatch(removeContact(id));
+  const handleRemoveComplete = (id: number) => {
+    gsap.to(contactRefs.current[id], { opacity: 0, duration: 0.5, onComplete: () => {
+      dispatch(removeContact(id));
+    }});
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +66,7 @@ const SearchBar: React.FC = () => {
       />
       <ResultList>
         {filteredContacts.map(contact => (
-          <ResultCard key={contact.id}>
+          <ResultCard key={contact.id} ref={el => contactRefs.current[contact.id] = el}>
             {editingId === contact.id ? (
               <EditForm>
                 <EditInput
@@ -104,8 +90,10 @@ const SearchBar: React.FC = () => {
                   onChange={handleChange}
                   placeholder="Telefone"
                 />
-                <EditButton onClick={handleSaveClick}>Salvar</EditButton>
-                <EditButton onClick={handleCancelClick} cancel>Cancelar</EditButton>
+                <div>
+                  <EditButton onClick={handleSaveClick}>Salvar</EditButton>
+                  <EditButton cancel onClick={handleCancelClick}>Cancelar</EditButton>
+                </div>
               </EditForm>
             ) : (
               <>
@@ -114,9 +102,12 @@ const SearchBar: React.FC = () => {
                 <ContactDetail>Telefone: {contact.phone}</ContactDetail>
                 <ContainerBotoes>
                   <BotaoEditar onClick={() => handleEditClick(contact)}>
-                    <img src="https://cdn3.iconfinder.com/data/icons/basicolor-essentials/24/006_edit-512.png" alt="Editar" />
+                    <img src="https://cdn3.iconfinder.com/data/icons/basicolor-essentials/24/006_edit-512.png" alt="" />
                   </BotaoEditar>
-                  <BotaoRemover onClick={() => handleRemoveClick(contact.id)}>Remover</BotaoRemover>
+                  <AnimatedButton 
+                    contactId={contact.id} 
+                    onRemoveComplete={() => handleRemoveComplete(contact.id)} 
+                  />
                 </ContainerBotoes>
               </>
             )}

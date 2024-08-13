@@ -75,23 +75,45 @@ export const BotaoEditar = styled.button`
 export const EditForm = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 `;
 
 export const EditInput = styled.input`
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   font-size: 1rem;
+  color: #333;
+  outline: none;
+  transition: border-color 0.3s;
+
+  &:focus {
+    border-color: #007bff;
+  }
 `;
 
 export const EditButton = styled.button<{ cancel?: boolean }>`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   color: #fff;
-  padding: 10px 15px;
+  padding: 12px 20px;
+  margin-right: 15px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  background-color: ${({ cancel }) => (cancel ? 'gray' : '	#7FFF00')};
+  background-color: ${({ cancel }) => (cancel ? '#6c757d' : '#30da6c')};
+  transition: background-color 0.3s, transform 0.2s;
+
+  &:hover {
+    background-color: ${({ cancel }) => (cancel ? '#5a6268' : '#04f653')};
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
 `;
